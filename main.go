@@ -30,7 +30,7 @@ func shutdown(cancel context.CancelFunc) {
 	doneHTTP := httpserver.Shutdown(ctx)
 	err := servicemanager.WaitUntilIsDoneOrCanceled(ctx, doneHTTP)
 	if err != nil {
-		log.Printf("service stopped by timeout %s", err)
+		log.Printf("service stopped by timeout %s\n", err)
 	}
 	log.Println("bye bye")
 }
