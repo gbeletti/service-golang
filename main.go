@@ -28,6 +28,6 @@ func shutdown(cancel context.CancelFunc) {
 	ctx, cancelTimeout := context.WithTimeout(context.Background(), time.Second*30)
 	defer cancelTimeout()
 	doneHTTP := httpserver.Shutdown(ctx)
-	servicemanager.WaitUntilIsDoneOrTimeout(ctx, doneHTTP)
+	servicemanager.WaitUntilIsDoneOrCanceled(ctx, doneHTTP)
 	log.Println("bye bye")
 }

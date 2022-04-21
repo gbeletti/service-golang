@@ -8,6 +8,7 @@ import (
 	"syscall"
 )
 
+// WaitShutdown waits until is going to die
 func WaitShutdown() {
 	sigc := make(chan os.Signal, 1)
 	signal.Notify(sigc, syscall.SIGHUP, syscall.SIGINT, syscall.SIGTERM, syscall.SIGQUIT)
@@ -15,7 +16,8 @@ func WaitShutdown() {
 	log.Printf("signal received [%v] canceling everything\n", s)
 }
 
-func WaitUntilIsDoneOrTimeout(ctx context.Context, dones ...chan struct{}) {
+// WaitUntilIsDoneOrCanceled it waits until all the dones channels are closed or the context is canceled
+func WaitUntilIsDoneOrCanceled(ctx context.Context, dones ...chan struct{}) {
 	done := make(chan struct{})
 	go func() {
 		for _, d := range dones {
@@ -27,6 +29,6 @@ func WaitUntilIsDoneOrTimeout(ctx context.Context, dones ...chan struct{}) {
 	case <-done:
 		log.Println("all done")
 	case <-ctx.Done():
-		log.Println("timeout")
+		log.Println("canceled")
 	}
 }
