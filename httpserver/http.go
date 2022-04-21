@@ -10,12 +10,7 @@ var srv *http.Server
 
 // Start starts the http server
 func Start() {
-	mux := http.NewServeMux()
-	mux.HandleFunc("/", helloWorld)
-	srv = &http.Server{
-		Addr:    ":8000",
-		Handler: mux,
-	}
+	createServer()
 	go func() {
 		if err := srv.ListenAndServe(); err != nil && err != http.ErrServerClosed {
 			panic(err)
@@ -33,6 +28,15 @@ func Shutdown(ctx context.Context) (done chan struct{}) {
 		}
 	}()
 	return
+}
+
+func createServer() {
+	mux := http.NewServeMux()
+	mux.HandleFunc("/", helloWorld)
+	srv = &http.Server{
+		Addr:    ":8000",
+		Handler: mux,
+	}
 }
 
 func helloWorld(w http.ResponseWriter, r *http.Request) {
