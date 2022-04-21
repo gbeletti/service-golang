@@ -2,11 +2,14 @@ package servicemanager
 
 import (
 	"context"
+	"errors"
 	"log"
 	"os"
 	"os/signal"
 	"syscall"
 )
+
+var ErrServiceCanceled = errors.New("service canceled")
 
 // WaitShutdown waits until is going to die
 func WaitShutdown() {
@@ -17,7 +20,7 @@ func WaitShutdown() {
 }
 
 // WaitUntilIsDoneOrCanceled it waits until all the dones channels are closed or the context is canceled
-func WaitUntilIsDoneOrCanceled(ctx context.Context, dones ...chan struct{}) {
+func WaitUntilIsDoneOrCanceled(ctx context.Context, dones ...chan struct{}) (err error) {
 	done := make(chan struct{})
 	go func() {
 		for _, d := range dones {
@@ -29,6 +32,8 @@ func WaitUntilIsDoneOrCanceled(ctx context.Context, dones ...chan struct{}) {
 	case <-done:
 		log.Println("all done")
 	case <-ctx.Done():
+		err = ErrServiceCanceled
 		log.Println("canceled")
 	}
+	return
 }
