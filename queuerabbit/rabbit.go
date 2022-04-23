@@ -4,7 +4,6 @@ import (
 	"context"
 	"log"
 	"os"
-	"time"
 
 	"github.com/gbeletti/rabbitmq"
 	amqp "github.com/rabbitmq/amqp091-go"
@@ -15,7 +14,8 @@ var rabbit rabbitmq.RabbitMQ
 // Start starts the RabbitMQ connection
 func Start(ctx context.Context) {
 	rabbit = rabbitmq.NewRabbitMQ()
-	go setupRabbit(ctx, rabbit)
+
+	setupRabbit(ctx)
 }
 
 // Shutdown stops the RabbitMQ connection
@@ -24,27 +24,16 @@ func Shutdown(ctx context.Context) (done chan struct{}) {
 	return
 }
 
-func setupRabbit(ctx context.Context, rabbit rabbitmq.RabbitMQ) {
+func setupRabbit(ctx context.Context) {
+	var setup rabbitmq.Setup = func() {
+		createQueues(rabbit)
+		createConsumers(ctx, rabbit)
+	}
 	configConn := rabbitmq.ConfigConnection{
 		URI:           loadURI(),
 		PrefetchCount: 1,
 	}
-	for {
-		notifyClose, err := rabbit.Connect(configConn)
-		if err != nil {
-			log.Printf("error connecting to rabbitmq: %s\n", err)
-			time.Sleep(time.Second * 5)
-			continue
-		}
-		createQueues(rabbit)
-		createConsumers(ctx, rabbit)
-		select {
-		case <-notifyClose:
-			continue
-		case <-ctx.Done():
-			return
-		}
-	}
+	rabbitmq.KeepConnectionAndSetup(ctx, rabbit, configConn, setup)
 }
 
 func createQueues(rabbit rabbitmq.QueueCreator) {
