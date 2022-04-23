@@ -1,0 +1,24 @@
+version: '3'
+services:
+  service:
+    hostname: service
+    image: service:latest
+    build:
+      context: .
+      dockerfile: Dockerfile
+    restart: always
+    env_file:
+      - ./.env
+    ports:
+      - "8000:8000"
+    depends_on:
+      - rabbitmq
+
+  rabbitmq:
+    image: 'rabbitmq:3-management-alpine'
+    ports:
+      - '15672:15672'
+      - '5672:5672'
+    environment:
+      - RABBITMQ_DEFAULT_USER=guest
+      - RABBITMQ_DEFAULT_PASS=guest
