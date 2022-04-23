@@ -1,4 +1,6 @@
 github.com/gbeletti/rabbitmq v0.0.0-20220422222739-2e66cf2ee5b5 h1:NoPqBMKfP/WfU0P2g5agLEUYT6SF/7svgWr3t7xFMrA=
 github.com/gbeletti/rabbitmq v0.0.0-20220422222739-2e66cf2ee5b5/go.mod h1:fqLs4HGQF/QT2b1sRrJIyo6N6SDxI8NrLfcTCurEUOQ=
+github.com/joho/godotenv v1.4.0 h1:3l4+N6zfMWnkbPEXKng2o2/MR5mSwTrBih4ZEkkz1lg=
+github.com/joho/godotenv v1.4.0/go.mod h1:f4LDr5Voq0i2e/R5DDNOoa2zzDfwtkZa6DnEwAbqwq4=
 github.com/rabbitmq/amqp091-go v1.3.4 h1:tXuIslN1nhDqs2t6Jrz3BAoqvt4qIZzxvdbdcxWtHYU=
 github.com/rabbitmq/amqp091-go v1.3.4/go.mod h1:ogQDLSOACsLPsIq0NpbtiifNZi2YOz0VTJ0kHRghqbM=
