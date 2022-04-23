@@ -9,6 +9,7 @@ import (
 	"syscall"
 )
 
+// ErrServiceCanceled is the error returned when the service is canceled
 var ErrServiceCanceled = errors.New("service canceled")
 
 // WaitShutdown waits until is going to die
