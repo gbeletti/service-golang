@@ -38,9 +38,11 @@ func shutdown(cancel context.CancelFunc) {
 	ctx, cancelTimeout := context.WithTimeout(context.Background(), time.Second*30)
 	defer cancelTimeout()
 	doneHTTP := httpserver.Shutdown(ctx)
-	err := servicemanager.WaitUntilIsDoneOrCanceled(ctx, doneHTTP)
+	doneRabbit := queuerabbit.Shutdown(ctx)
+	err := servicemanager.WaitUntilIsDoneOrCanceled(ctx, doneHTTP, doneRabbit)
 	if err != nil {
 		log.Printf("service stopped by timeout %s\n", err)
 	}
+	time.Sleep(time.Millisecond * 200)
 	log.Println("bye bye")
 }
