@@ -10,10 +10,18 @@ import (
 	amqp "github.com/rabbitmq/amqp091-go"
 )
 
+var rabbit rabbitmq.RabbitMQ
+
 // Start starts the RabbitMQ connection
 func Start(ctx context.Context) {
-	rabbit := rabbitmq.NewRabbitMQ()
+	rabbit = rabbitmq.NewRabbitMQ()
 	go setupRabbit(ctx, rabbit)
+}
+
+// Shutdown stops the RabbitMQ connection
+func Shutdown(ctx context.Context) (done chan struct{}) {
+	done = rabbit.Close(ctx)
+	return
 }
 
 func setupRabbit(ctx context.Context, rabbit rabbitmq.RabbitMQ) {
