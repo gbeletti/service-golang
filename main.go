@@ -8,7 +8,15 @@ import (
 	"github.com/gbeletti/service-golang/httpserver"
 	"github.com/gbeletti/service-golang/queuerabbit"
 	"github.com/gbeletti/service-golang/servicemanager"
+	"github.com/joho/godotenv"
 )
+
+func init() {
+	err := godotenv.Load()
+	if err != nil {
+		log.Println("Error loading .env file")
+	}
+}
 
 func main() {
 	_, cancel := start()
