@@ -4,6 +4,8 @@ import (
 	"context"
 	"log"
 	"net/http"
+
+	"github.com/gbeletti/service-golang/queuerabbit"
 )
 
 var srv *http.Server
@@ -40,7 +42,9 @@ func createServer() {
 }
 
 func helloWorld(w http.ResponseWriter, r *http.Request) {
-	_, err := w.Write([]byte("Hello World"))
+	msg := "Hello World"
+	queuerabbit.PublishTest(context.Background(), msg)
+	_, err := w.Write([]byte(msg))
 	if err != nil {
 		log.Printf("couldnt write response error [%s]\n", err)
 	}
