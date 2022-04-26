@@ -78,6 +78,17 @@ func receiveMessage(d *amqp.Delivery) {
 	log.Printf("received message: %s\n", d.Body)
 }
 
+// PublishTest publishes a test message to the RabbitMQ exchange
+func PublishTest(ctx context.Context, msg string) {
+	config := rabbitmq.ConfigPublish{
+		Exchange:   "",
+		RoutingKey: "test",
+	}
+	if err := rabbit.Publish(ctx, []byte(msg), config); err != nil {
+		log.Printf("error publishing message: %s\n", err)
+	}
+}
+
 func loadURI() (uri string) {
 	uri = os.Getenv("RABBITMQ_URI")
 	return
