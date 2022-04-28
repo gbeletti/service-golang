@@ -15,3 +15,4 @@
 # vendor/
 service-golang
 go.work
+go.work.sum
