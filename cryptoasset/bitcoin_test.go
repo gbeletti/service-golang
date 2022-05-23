@@ -1,0 +1,1 @@
+package cryptoasset_test
