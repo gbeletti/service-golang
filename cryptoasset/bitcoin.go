@@ -55,6 +55,7 @@ func validateStartEndDates(startDate, endDate string) (start, end time.Time, err
 		err = ErrStartDateAfterEndDate
 		return
 	}
+	end = end.AddDate(0, 0, 1)
 	return
 }
 
