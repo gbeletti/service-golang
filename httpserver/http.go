@@ -2,9 +2,11 @@ package httpserver
 
 import (
 	"context"
+	"encoding/json"
 	"log"
 	"net/http"
 
+	"github.com/gbeletti/service-golang/cryptoasset"
 	"github.com/gbeletti/service-golang/queuerabbit"
 	"github.com/go-chi/chi/v5"
 )
@@ -55,7 +57,16 @@ func helloWorld(w http.ResponseWriter, r *http.Request) {
 func bitcoinVariation(w http.ResponseWriter, r *http.Request) {
 	startDate := chi.URLParam(r, "startDate")
 	endDate := chi.URLParam(r, "endDate")
-	_, err := w.Write([]byte(startDate + " " + endDate))
+	variation, err := cryptoasset.GetBitcoinVariation(startDate, endDate)
+	w.Header().Set("Content-Type", "application/json")
+	if err != nil {
+		w.WriteHeader(http.StatusNotAcceptable)
+	}
+	res, err := json.Marshal(variation)
+	if err != nil {
+		log.Printf("couldnt marshal the response to json error [%s]\n", err)
+	}
+	_, err = w.Write(res)
 	if err != nil {
 		log.Printf("couldnt write response error [%s]\n", err)
 	}
