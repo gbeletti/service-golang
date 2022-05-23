@@ -28,16 +28,8 @@ type Variation struct {
 // GetBitcoinVariation returns the bitcoin variation on a given period.
 // The expected format is YYYY-MM-DD.
 func GetBitcoinVariation(startDate, endDate string) (btcVars []Variation, err error) {
-	start, err := parseDate(startDate)
+	start, end, err := validateStartEndDates(startDate, endDate)
 	if err != nil {
-		return
-	}
-	end, err := parseDate(endDate)
-	if err != nil {
-		return
-	}
-	if start.After(end) {
-		err = ErrStartDateAfterEndDate
 		return
 	}
 	for start.Before(end) {
@@ -46,6 +38,22 @@ func GetBitcoinVariation(startDate, endDate string) (btcVars []Variation, err er
 			Variation: 0.0,
 		})
 		start = start.AddDate(0, 0, 1)
+	}
+	return
+}
+
+func validateStartEndDates(startDate, endDate string) (start, end time.Time, err error) {
+	start, err = parseDate(startDate)
+	if err != nil {
+		return
+	}
+	end, err = parseDate(endDate)
+	if err != nil {
+		return
+	}
+	if start.After(end) {
+		err = ErrStartDateAfterEndDate
+		return
 	}
 	return
 }
