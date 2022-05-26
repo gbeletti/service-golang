@@ -20,11 +20,7 @@ func Start(opts ...*options.ClientOptions) (err error) {
 	} else {
 		opt = opts[0]
 	}
-	cli, err := connectDB()
-	if err != nil {
-		return
-	}
-	client = cli
+	err = connectDB()
 	return
 }
 
@@ -33,12 +29,8 @@ func GetClient() (*mongo.Client, error) {
 	if client != nil {
 		return client, nil
 	}
-	cli, err := connectDB()
-	if err != nil {
-		return nil, err
-	}
-	client = cli
-	return client, nil
+	err := connectDB()
+	return client, err
 }
 
 // Close closes all the connections to the database
@@ -50,13 +42,17 @@ func Close(ctx context.Context) (err error) {
 	return
 }
 
-func connectDB() (cli *mongo.Client, err error) {
-	cli, err = mongo.NewClient(opt)
+func connectDB() error {
+	cli, err := mongo.NewClient(opt)
 	if err != nil {
-		return
+		return err
 	}
 	err = cli.Connect(context.Background())
-	return
+	if err != nil {
+		return err
+	}
+	client = cli
+	return err
 }
 
 func getURI() (uri string) {
