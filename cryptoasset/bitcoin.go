@@ -32,6 +32,7 @@ func GetBitcoinVariation(startDate, endDate string) (btcVars []Variation, err er
 	if err != nil {
 		return
 	}
+	end = end.AddDate(0, 0, 1)
 	for start.Before(end) {
 		btcVars = append(btcVars, Variation{
 			Date:      start.Format(dateLayout),
@@ -43,11 +44,11 @@ func GetBitcoinVariation(startDate, endDate string) (btcVars []Variation, err er
 }
 
 func validateStartEndDates(startDate, endDate string) (start, end time.Time, err error) {
-	start, err = parseDate(startDate)
+	start, err = time.Parse(dateLayout, startDate)
 	if err != nil {
 		return
 	}
-	end, err = parseDate(endDate)
+	end, err = time.Parse(dateLayout, endDate)
 	if err != nil {
 		return
 	}
@@ -55,11 +56,5 @@ func validateStartEndDates(startDate, endDate string) (start, end time.Time, err
 		err = ErrStartDateAfterEndDate
 		return
 	}
-	end = end.AddDate(0, 0, 1)
-	return
-}
-
-func parseDate(dt string) (date time.Time, err error) {
-	date, err = time.Parse(dateLayout, dt)
 	return
 }
