@@ -1,5 +1,6 @@
 let operations = [
-    db.assets.insert([
+    db.bitcoin.createIndex({ "date": 1 }),
+    db.bitcoin.insert([
         {
             "date": "2013-04-28",
             "price": 135.3
