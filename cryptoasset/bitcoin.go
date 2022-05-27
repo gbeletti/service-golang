@@ -10,6 +10,7 @@ const (
 )
 
 var (
+	// ErrStartDateAfterEndDate is the error returned when the start date is after the end date
 	ErrStartDateAfterEndDate = errors.New("start date after end date")
 )
 
@@ -32,13 +33,38 @@ func GetBitcoinVariation(startDate, endDate string) (btcVars []Variation, err er
 	if err != nil {
 		return
 	}
+	btcVars = calculateBitcoinVariation(start, end, btcDB{})
+
+	return
+}
+
+func calculateBitcoinVariation(start, end time.Time, btcGetter BitcoinPriceGetter) (btcVars []Variation) {
 	end = end.AddDate(0, 0, 1)
+	var firstDone bool
+	var btcPricePrevius BitcoinPrice
+	var err error
 	for start.Before(end) {
+		var btcPrice BitcoinPrice
+		btcPrice, err = btcGetter.GetBitcoinPrice(start.Format(dateLayout))
+		if err != nil {
+			btcVars = append(btcVars, Variation{
+				Date:      start.Format(dateLayout),
+				Variation: 0.0,
+			})
+			start = start.AddDate(0, 0, 1)
+			continue
+		}
+		if !firstDone {
+			btcPricePrevius = btcPrice
+			firstDone = true
+		}
+		variat := btcPrice.Price - btcPricePrevius.Price
 		btcVars = append(btcVars, Variation{
 			Date:      start.Format(dateLayout),
-			Variation: 0.0,
+			Variation: variat,
 		})
 		start = start.AddDate(0, 0, 1)
+		btcPricePrevius = btcPrice
 	}
 	return
 }
