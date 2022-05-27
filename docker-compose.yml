@@ -7,12 +7,14 @@ services:
       context: .
       dockerfile: Dockerfile
     restart: always
-    env_file:
-      - ./.env
     ports:
       - "8000:8000"
     depends_on:
       - rabbitmq
+      - mongodb
+    environment:
+      - RABBITMQ_URI=amqp://guest:guest@rabbitmq:5672?heartbeat=30&connection_timeout=120
+      - MONGO_URI=mongodb://root:root@mongodb:27017
 
   rabbitmq:
     image: 'rabbitmq:3-management-alpine'
@@ -22,3 +24,14 @@ services:
     environment:
       - RABBITMQ_DEFAULT_USER=guest
       - RABBITMQ_DEFAULT_PASS=guest
+
+  mongodb:
+    image: mongo:latest
+    ports:
+      - '27017:27017'
+    environment:
+      - MONGO_INITDB_ROOT_USERNAME=root
+      - MONGO_INITDB_ROOT_PASSWORD=root
+      - MONGO_INITDB_DATABASE=data
+    volumes:
+      - ./db:/docker-entrypoint-initdb.d:ro
