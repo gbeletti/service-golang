@@ -7,12 +7,14 @@ services:
       context: .
       dockerfile: Dockerfile
     restart: always
-    env_file:
-      - ./.env
     ports:
       - "8000:8000"
     depends_on:
       - rabbitmq
+      - mongodb
+    environment:
+      - RABBITMQ_URI=amqp://guest:guest@rabbitmq:5672?heartbeat=30&connection_timeout=120
+      - MONGO_URI=mongodb://root:root@mongodb:27017
 
   rabbitmq:
     image: 'rabbitmq:3-management-alpine'
