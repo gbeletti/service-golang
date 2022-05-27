@@ -15,7 +15,7 @@ import (
 func init() {
 	err := godotenv.Load()
 	if err != nil {
-		log.Println("Error loading .env file")
+		log.Println("no .env file found")
 	}
 }
 
@@ -29,7 +29,9 @@ func start() (ctx context.Context, cancel context.CancelFunc) {
 	// This is the main context for the service. When it is canceled it means the service is going down.
 	// All the tasks must be canceled
 	ctx, cancel = context.WithCancel(context.Background())
-	dbmongo.Start()
+	if err := dbmongo.Start(); err != nil {
+		log.Printf("couldnt start database error [%s]\n", err)
+	}
 	queuerabbit.Start(ctx)
 	httpserver.Start()
 	return
@@ -44,6 +46,9 @@ func shutdown(cancel context.CancelFunc) {
 	err := servicemanager.WaitUntilIsDoneOrCanceled(ctx, doneHTTP, doneRabbit)
 	if err != nil {
 		log.Printf("service stopped by timeout %s\n", err)
+	}
+	if err := dbmongo.Close(context.Background()); err != nil {
+		log.Printf("couldnt close mongo connection error [%s]\n", err)
 	}
 	time.Sleep(time.Millisecond * 200)
 	log.Println("bye bye")
