@@ -1,3 +1,4 @@
 package cryptoasset
 
 var ValidateStartEndDates = validateStartEndDates
+var CalculateBitcoinVariation = calculateBitcoinVariation
