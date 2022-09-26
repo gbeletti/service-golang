@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"log"
 	"net/http"
+	"time"
 
 	"github.com/gbeletti/service-golang/cryptoasset"
 	"github.com/gbeletti/service-golang/queuerabbit"
@@ -40,8 +41,9 @@ func createServer() {
 	mux.Get("/", helloWorld)
 	mux.Get("/bitcoin/startdate/{startDate:[0-9]{4}-[0-9]{2}-[0-9]{2}}/enddate/{endDate:[0-9]{4}-[0-9]{2}-[0-9]{2}}", bitcoinVariation)
 	srv = &http.Server{
-		Addr:    ":8000",
-		Handler: mux,
+		Addr:              ":8000",
+		Handler:           mux,
+		ReadHeaderTimeout: time.Second * 30,
 	}
 }
 
