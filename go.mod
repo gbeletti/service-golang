@@ -3,7 +3,7 @@ module github.com/gbeletti/service-golang
 go 1.19
 
 require (
-	github.com/gbeletti/rabbitmq v0.0.9
+	github.com/gbeletti/rabbitmq v0.0.10
 	github.com/go-chi/chi/v5 v5.0.8
 	github.com/joho/godotenv v1.4.0
 	github.com/rabbitmq/amqp091-go v1.5.0
@@ -23,3 +23,5 @@ require (
 	golang.org/x/sync v0.1.0 // indirect
 	golang.org/x/text v0.5.0 // indirect
 )
+
+replace github.com/docker/docker => github.com/docker/docker v20.10.3-0.20221013203545-33ab36d6b304+incompatible // 22.06 branch
